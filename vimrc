@@ -1,5 +1,17 @@
-" 关闭 vi 兼容模式
 set nocompatible
+
+set nobackup
+set noswapfile
+
+"set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
+"set fileencodings=cp936,gb18030,gbk,gb2312,utf-8,ucs-bom,latin-1
+set fileencodings=utf-8,gbk
+set termencoding=utf-8
+set encoding=utf-8
+
+set dir=.
+
+set backspace=indent,eol,start
 
 syntax on
 
@@ -7,135 +19,132 @@ filetype on
 
 filetype plugin on
 
-set nobackup
-set noswapfile
+" no auto change line
+" set nowrap
 
 set showmatch
 
-"set mouse=a
-
-set backspace=indent,eol,start
-
 set hlsearch
-"set nohlsearch
-set ignorecase
 
-" search when you input
+"set ignorecase
+
 set incsearch
 
-"set tabstop=8
+set laststatus=2
+" set statusline=%F\ (%l,%c)\ %P
+set statusline=%F%=[%{&ff}\ %Y]\ [0x\%02.2B]\ (%l,%v)\ %p%%
+
+set cc=80
+
+set scrolloff=5 
+
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
-set noexpandtab
+set expandtab
 
-" TAB替换为空格：
-"set ts=4
-"set expandtab
-" %retab!
+" set no autoindent
+set noai
 
-" 空格替换为TAB：
-"set ts=4
-"set noexpandtab
-" %retab!
-
-" 设置行号
 set nu
-" 行号颜色
+
 highlight linenr ctermfg=6
-highlight linenr ctermbg=darkgrey
-" 行号前加空格
+highlight linenr ctermbg=0
+
+highlight StatusLine ctermfg=7 ctermbg=0
+
 set nuw=1
-
-" 设置折叠显示开启
-set foldcolumn=1
-
-" 依照缩进折叠
-" 手工定义折叠
-set foldmethod=manual
-" 更多的缩进表示更高级别的折叠
-"set foldmethod=indent
-" 用表达式来定义折叠
-"set foldmethod=expr
-" 用语法高亮来定义折叠
-"set foldmethod=syntax
-" 对没有更改的文本进行折叠
-"set foldmethod=diff
-" 对文中的标志折叠
-"set foldmethod=marker
-
-"折叠级别
-set foldlevel=9
-
-" 设置C风格缩进
-"set cindent
-
-"set autoindent
 
 set tags=tags;
 set autochdir
 
-"set showmatch
+set cscopequickfix=s-,c-,d-,i-,t-,e-
 
-"set list
 set title
-"set ruler
-"set encoding=utf-8
 
-"set statusline=\ %<%F[%1*%M%*%n%R%H]%=\ %y\ %0(%{&fileformat}\ [%{(&fenc==\"\"?&enc:&fenc).(&bomb?\",BOM\":\"\")}]\ %c:%l/%L%)
+set foldcolumn=1
+set foldmethod=manual
 
-" 配置状态行显示文件路径
-function! CurDir()
-	let curdir = substitute(getcwd(), '/Users/amir/', "~/", "g")
-	return curdir
-endfunction
-set laststatus=2
-" Format the statusline
-set statusline=
-" path to the file in the buffer, relative to current directory
-set statusline+=%f
-"set statusline+=\ %h%1*%m%r%w%0* " flag 
-"set statusline+=\ [%{strlen(&ft)?&ft:'none'}, " filetype 
-"set statusline+=%{&encoding}, " encoding 
-"set statusline+=%{&fileformat}] " file format 
-"set statusline+=\ PWD:%r%{CurDir()}%h 
-set statusline+=\ Char:%-14.(%l,%c%V%)\ %<%P 
-set statusline+=\ Line:%l/%L 
+set foldlevel=9
 
+" set t_Co=256
 
-set t_Co=256
-" colorscheme darkburn
-
-
-helptags ~/.vim/doc
+"helptags ~/.vim/doc
 
 let Tlist_Exit_OnlyWindow=1
 let Tlist_Use_Right_Window=1
 let Tlist_Show_One_File=1
 
-let Tlist_Ctags_Cmd = '/usr/bin/ctags'
+let Tlist_Ctags_Cmd='/usr/bin/ctags'
 
-"key map
 map <F9> :TlistToggle<CR>
-map <C-F9> :tp<CR>
-map <C-F10> :tn<CR>
 
-map <C-h> <C-w>h
-map <C-j> <C-w>j
-map <C-k> <C-w>k
-map <C-l> <C-w>l
-map <C-F12> :set mouse=a<CR>
-map <C-F11> :set mouse=<CR>
+let g:doxygenToolkit_authorName="Huchenyuan"
+let g:doxygenToolkit_briefTag_funcName="yes"
 
-let w:d_i=0
-function Debug_index()
-	let w:d_i=w:d_i+1
-	return w:d_i-1
-endfunction
+nmap - :Dox<CR>
 
-imap <F5> !@#$-hh_debug_label-<ESC>:s/!@#$-hh_debug_label-/\="!@#$-hh_debug_label-".Debug_index().""/<CR>A
-map <F6> ofprintf(stderr, "!@#$-hh_debug_label-\n");<ESC>:s/!@#$-hh_debug_label-/\="!@#$-hh_debug_label-".Debug_index().""/<CR>
+"if has("cscope")
+if 0
+    set csprg=/bin/cscope
+    set csto=0
+    set cst
+    set csverb
+    set cspc=3
+    "add any database in current dir
+    if filereadable("cscope.out")
+        cs add cscope.out
+    "else search cscope.out elsewhere
+    else
+       let cscope_file=findfile("cscope.out", ".;")
+       let cscope_pre=matchstr(cscope_file, ".*/")
+       if !empty(cscope_file) && filereadable(cscope_file)
+           exe "cs add" cscope_file cscope_pre
+       endif      
+     endif
+endif
 
-map <C-F6> <ESC>:%s/.*!@#$-hh_debug_label-.*\n//<CR>
+ map <C-h> <C-w>h
+ map <C-j> <C-w>j
+ map <C-k> <C-w>k
+ map <C-l> <C-w>l
 
-" map <F7> oprintk("%s(%d)-%s", __FILE__, __LINE__, __FUNCTION__); /* hh_debug */<ESC>
+nmap <C-u> :tabp<CR>
+nmap <C-i> :tabn<CR>
+
+nmap 8 :tabnew<CR>:e .<CR>
+
+nmap 9 :tp<CR>zt
+nmap 0 :tn<CR>zt
+
+function SearchSelText()
+    let max = 10
+    let prj_dir = './'
+    let i = 0
+    let break = 0
+    while isdirectory(prj_dir) && i < max
+        if filereadable(prj_dir . 'tags') || filereadable(prj_dir . 'prj__')
+            let word = expand("<cword>")
+            execute 'vimgrep /\<'. word . '\>/ ' . prj_dir . '**/*.c ' . prj_dir . '**/*.h'
+            execute 'cw'
+            break
+        endif
+        let prj_dir = prj_dir . '../'
+        let i = i + 1
+    endwhile
+endf
+"    :vimgrep /\<<C-R>=expand("<cword>")<CR>\>/ prj_dir<CR> :cw<CR>
+
+nmap <F3> :cp<CR>zt
+nmap <F4> :cn<CR>zt
+nmap <F2> :call SearchSelText()<CR>
+"nmap <F2> :vimgrep /\<<C-R>=expand("<cword>")<CR>\>/ **/*<CR> :cw<CR>
+
+map <F11> :set mouse=<CR>
+map <F12> :set mouse=a<CR>
+
+vmap <F6> :!cat >> /tmp/hcy_clipboard<CR>u
+vmap <F7> :!cat > /tmp/hcy_clipboard<CR>u
+map <F8> :r /tmp/hcy_clipboard<CR>
+
+"map :help vim-script-intro
